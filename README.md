@@ -1,32 +1,37 @@
 -- Active: 1750218772421@@127.0.0.1@5432@postgres
+
 # ERD: Tickitz
+
 ```mermaid
 
 erDiagram
+    direction LR
 
-    users ||--o{ sessions : "create"
-    movies ||--o{ genres : "has"
-    movies ||--o{ casts : "has"
-    movies ||--o{ directors : "has"
-
-    users }o--||transactions_detail:need
-    payments }o--||transactions_detail:need
-    transactions }o--|| transactions_detail:has
-    movies }o--||transactions_detail:has
+    users ||--|{ sessions :create
+    movie_genres||--|{ genres:has
+    transactions ||--|{ transactions_detail:has
+    transactions_detail }o--||movies:has
+    movies }|--|| movie_genres:has
+    movie_casts||--|{ casts:has
+    movies }|--|| movie_casts:has
+    movies }|--|| movie_directors : has
+    movie_directors||--|{ directors:has
+    users ||--|{ transactions_detail:do
+    payments||--|{transactions_detail:"needed by"
 
     users {
         int       id            PK
-        string    email         UK    
+        string    email         UK
         string    username      UK
         string    password
         string    role
         datetime  created_at
     }
-    
+
     sessions {
         int       id            PK
         int       user_id       FK
-        string    token         
+        string    token
         string    device_info
         boolean   is_active
         datetime  created_at
@@ -35,23 +40,41 @@ erDiagram
 
     movies {
         int         id              PK
-        int         id_genres       FK
-        int         id_cast         FK
-        int         id_director     FK     
-        string      title               
+        int         genres_id       FK
+        int         cast_id         FK
+        int         director_id     FK
+        string      title
         string      synopsis
         string      duration
         string      release_date
         string      rating
-        string      backdrop_img     
+        string      backdrop_img
         string      poster_img
-        int         price       
-        datetime    created_at        
+        int         price
+        datetime    created_at
     }
+
+    movie_casts{
+        int    id   PK
+        int    id_movies    FK
+        int    id_casts    FK
+    }
+
+    movie_directors{
+        int    id   PK
+        int    id_movies    FK
+        int    id_directors    FK
+    }
+
 
     genres {
         int     id    PK
-        string  name  
+        string  name
+    }
+    movie_genres{
+        int    id   PK
+        int    movies_id    FK
+        int    genres_id    FK
     }
 
     casts {
@@ -60,9 +83,10 @@ erDiagram
         string  role
     }
 
+
     directors {
         int     id    PK
-        string  name  PK   
+        string  name  
     }
 
     payments{
@@ -78,26 +102,21 @@ erDiagram
 
     transactions_detail {
         int     id               PK
-        int     id_transactions  FK
-        int     id_user          FK
-        int     id_movies        FK
+        int     transactions_id  FK
+        int     user_id          FK
+        int     movies_id        FK
         int     seats
-
     }
-    
-    
-    
-
 
 ```
 
-<!-- 
+<!--
 1. Register
    - id langsung digenerate
    - ketika user register data email, username dan password disimpen di tabel users
    - email, username , dan password harus UNIQUE
    - password harus di hash dulu sebelum masuk
-   - role default (user) langsung diberikan 
+   - role default (user) langsung diberikan
    - is_active masih false
    - created_at ditrigger
 2. Login
@@ -112,5 +131,5 @@ erDiagram
 4. Reset Password
    - user request reset_token
    - created_at dan expired_at digenerate
-   - user udah pake token, is_used ubah ke true 
+   - user udah pake token, is_used ubah ke true
  -->
