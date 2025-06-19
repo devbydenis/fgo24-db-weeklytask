@@ -1,5 +1,3 @@
--- Active: 1750218772421@@127.0.0.1@5432@postgres
-
 # ERD: Tickitz
 
 ```mermaid
@@ -7,16 +5,17 @@
 erDiagram
     direction LR
 
-    users ||--|{ sessions :create
-    movie_genres||--|{ genres:has
-    transactions ||--|{ transactions_detail:has
+    users ||--o{ sessions :"creates"
+    users ||--|| profile :has
+    users ||--o{ transactions:makes
+    transactions ||--o{ transactions_detail:contains
     transactions_detail }o--||movies:has
+    movie_genres||--|{ genres:has
     movies }|--|| movie_genres:has
     movie_casts||--|{ casts:has
     movies }|--|| movie_casts:has
     movies }|--|| movie_directors : has
     movie_directors||--|{ directors:has
-    users ||--|{ transactions_detail:do
     payments||--|{transactions_detail:"needed by"
 
     users {
@@ -38,55 +37,55 @@ erDiagram
         datetime  expired_at
     }
 
+    profile {
+        int       id            PK
+        int       user_id       FK
+        string    firstname 
+        string    lastname 
+    }
+
     movies {
         int         id              PK
-        int         genres_id       FK
-        int         cast_id         FK
-        int         director_id     FK
         string      title
         string      synopsis
-        string      duration
-        string      release_date
+        time        duration
+        date        release_date
         string      rating
         string      backdrop_img
         string      poster_img
-        int         price
+        decimal     price
         datetime    created_at
     }
 
     movie_casts{
-        int    id   PK
-        int    id_movies    FK
-        int    id_casts    FK
-    }
-
-    movie_directors{
-        int    id   PK
-        int    id_movies    FK
-        int    id_directors    FK
-    }
-
-
-    genres {
-        int     id    PK
-        string  name
-    }
-    movie_genres{
-        int    id   PK
+        int    id           PK
         int    movies_id    FK
-        int    genres_id    FK
+        int    casts_id     FK
     }
-
     casts {
         int     id    PK
         string  name
         string  role
     }
 
-
+    movie_directors{
+        int    id   PK
+        int    movies_id       FK
+        int    directors_id    FK
+    }
     directors {
         int     id    PK
         string  name  
+    }
+
+    movie_genres{
+        int    id           PK
+        int    movies_id    FK
+        int    genres_id    FK
+    }
+    genres {
+        int     id    PK
+        string  name
     }
 
     payments{
@@ -95,16 +94,16 @@ erDiagram
     }
 
     transactions{
-        int         id          PK
+        int         id           PK
         boolean     status
         datetime    created_at
     }
-
     transactions_detail {
         int     id               PK
         int     transactions_id  FK
         int     user_id          FK
-        int     movies_id        FK
+        int     movie_id         FK
+        int     payment_id       FK
         int     seats
     }
 
