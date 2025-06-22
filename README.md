@@ -32,7 +32,7 @@ erDiagram
         int         id            PK
         string      email         UK
         string      username      UK
-        string      password
+        string      password      
         string      phone_number
         boolean     is_verified
         string      role
@@ -77,10 +77,10 @@ erDiagram
         datetime    created_at
     }
 
-    movie_casts{
+    movies_casts{
         int     id              PK
-        int     movies_id       FK
-        int     casts_id        FK
+        int     movie_id        FK
+        int     cast_id         FK
         string  character_name
     }
     casts {
@@ -91,22 +91,10 @@ erDiagram
         datetime  updated_at
     }
 
-    movie_directors{
-        int    id              PK
-        int    movies_id       FK
-        int    directors_id    FK
-    }
-    directors {
-        int       id           PK
-        string    name
-        datetime  created_at
-        datetime  updated_at
-    }
-
-    movie_genres{
+    movies_genres{
         int    id           PK
-        int    movies_id    FK
-        int    genres_id    FK
+        int    movie_id    FK
+        int    genre_id    FK
     }
     genres {
         int       id        PK
@@ -115,18 +103,34 @@ erDiagram
         datetime  updated_at
     }
 
+    movies_directors{
+        int    id              PK
+        int    movie_id       FK
+        int    director_id    FK
+    }
+    directors {
+        int       id           PK
+        string    name
+        datetime  created_at
+        datetime  updated_at
+    }
+
     cities {
-        int id  PK
-        string  name
-        string  province
+        int       id          PK
+        string    name
+        string    province
+        datetime  created_at
+        datetime  updated_at
     }
 
     cinemas {
-        int     id          PK
-        int     city_id     FK
-        string  name
-        string  address
-        boolean is_active
+        int       id          PK
+        int       city_id     FK
+        string    name
+        string    address
+        boolean   is_active
+        datetime  created_at
+        datetime  updated_at
     }
 
     theaters {
@@ -138,9 +142,9 @@ erDiagram
     }
 
     showtimes {
-        int     id              PK
-        int     movies_id        FK
-        int     theaters_id      FK
+        int     id               PK
+        int     movie_id        FK
+        int     theater_id      FK
         date    show_date
         time    show_time
         decimal base_price
@@ -149,7 +153,7 @@ erDiagram
 
     seats {
         int     id          PK
-        int     theaters_id  FK
+        int     theater_id  FK
         string  seat_letter UK
         int     seat_number UK
         boolean is_active
@@ -158,13 +162,13 @@ erDiagram
     bookings_seats {
         int     id              PK
         int     seat_id         FK
-        int     bookings_id     FK
+        int     booking_id     FK
         decimal seat_price
     }
 
     bookings {
         int         id               PK
-        int         booking_code     UK
+        string      booking_code     UK
         int         user_id          FK
         int         showtime_id      FK
         enum        status           "pending, success, failed"
@@ -184,12 +188,12 @@ erDiagram
     }
 
     payments_transactions {
-        int      id              PK
-        int      booking_id      FK
-        int      payment_id      FK
+        int      id                 PK
+        int      booking_id         FK
+        int      payment_id         FK
         string   transaction_id
         string   gateway_response 
-        enum     status
+        enum     status             "pending,success,failed,refunded"
         decimal  amount
         string   failure_reason
         datetime completed_at
