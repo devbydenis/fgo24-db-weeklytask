@@ -8,12 +8,12 @@ erDiagram
     users ||--o{ sessions :"creates"
     users ||--|| profile : "has"
 
-    movie_genres||--|{ genres: "has"
-    movies }|--|| movie_genres: "has"
-    movie_casts||--|{ casts: "has"
-    movies }|--|| movie_casts: "has"
-    movies }|--|| movie_directors :  "has"
-    movie_directors||--|{ directors: "has"
+    movies_genres||--|{ genres: "has"
+    movies }|--|| movies_genres: "has"
+    movies_casts||--|{ casts: "has"
+    movies }|--|| movies_casts: "has"
+    movies }|--|| movies_directors :  "has"
+    movies_directors||--|{ directors: "has"
     movies ||--o{ showtimes: "shown in"
 
     bookings }o--||users : "makes"
